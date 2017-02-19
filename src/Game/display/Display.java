@@ -4,8 +4,6 @@ import javax.swing.JFrame;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.awt.image.ImageObserver;
-import java.awt.image.ImageProducer;
 import java.util.Arrays;
 
 public abstract class Display {
@@ -46,25 +44,41 @@ public abstract class Display {
         }
     }
 
-    public static float delta = 0;
+    //public static float delta = 0;
 
     public static void clear()
     {
         Arrays.fill(bufferData, clearColor);
     }
 
-    public static void render()
-    {
-        bufferGraphics.setColor(new Color(0x66FF8800));
-        bufferGraphics.fillOval((int)(150+(Math.sin(delta)*200)),250,100,100);
-        bufferGraphics.fillRect(90,90,100,50);
-        delta+=0.02;
-    }
+    //public static void render()
+    //{
+    //    bufferGraphics.setColor(new Color(0x66FF8800));
+    //    bufferGraphics.fillOval((int)(150+(Math.sin(delta)*200)),250,100,100);
+    //    bufferGraphics.fillRect(90,90,100,50);
+    //    delta+=0.02;
+    //}
 
     public static  void swapBuffers()
     {
         Graphics g = content.getGraphics();
         g.drawImage(buffer,0,0,null);
+    }
 
+    public static Graphics2D getGraphics()
+    {
+        return (Graphics2D) bufferGraphics;
+    }
+
+    public static void destroy()
+    {
+        if(!created)
+            return;
+        window.dispose();
+    }
+
+    public static void setTitle(String title)
+    {
+        window.setTitle(title);
     }
 }
