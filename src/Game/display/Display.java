@@ -1,5 +1,7 @@
 package Game.display;
 
+import Game.IO.Input;
+
 import javax.swing.JFrame;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -44,20 +46,11 @@ public abstract class Display {
         }
     }
 
-    //public static float delta = 0;
-
     public static void clear()
     {
         Arrays.fill(bufferData, clearColor);
     }
 
-    //public static void render()
-    //{
-    //    bufferGraphics.setColor(new Color(0x66FF8800));
-    //    bufferGraphics.fillOval((int)(150+(Math.sin(delta)*200)),250,100,100);
-    //    bufferGraphics.fillRect(90,90,100,50);
-    //    delta+=0.02;
-    //}
 
     public static  void swapBuffers()
     {
@@ -80,5 +73,10 @@ public abstract class Display {
     public static void setTitle(String title)
     {
         window.setTitle(title);
+    }
+
+    public static void addInputListener(Input lisener)
+    {
+        window.add(lisener);
     }
 }
