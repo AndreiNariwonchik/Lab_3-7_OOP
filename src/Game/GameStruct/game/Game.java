@@ -1,5 +1,6 @@
 package Game.GameStruct.game;
 
+import Game.Tanks.EnemyTank1;
 import Game.Tanks.Tank;
 import Game.display.Display;
 import Game.display.ShowPicture;
@@ -10,6 +11,7 @@ import java.awt.event.KeyEvent;
 import java.util.*;
 
 import Game.IO.Input;
+import org.omg.PortableServer.THREAD_POLICY_ID;
 
 /**
  * Created by andre on 19.02.2017.
@@ -17,12 +19,13 @@ import Game.IO.Input;
 public class Game implements Runnable
 {
     private Level currentLevel;
+    private Dictionary<Tank, Thread> enemyThreads = new Hashtable<>();
 
     public static final int WIDTH = 800;
     public static  final  int HEIGHT = 600;
     public static final String TITLE = "Tanks";
     public static final int CLEAR_COLOR = 0xff000000;
-    public static final float UPDATE_RATE = 60.0f;
+    public static final float UPDATE_RATE = 40.0f;
     public static  final float UPDATE_INTERVAL = Time.SECOND/UPDATE_RATE;
     public static final long IDLE_TIME = 1;
 
@@ -31,14 +34,6 @@ public class Game implements Runnable
     private Graphics2D graphics;
 
     private Input input;
-
-    //temp
-    private float spead = 3;
-    private float x = 350;
-    private float y = 250;
-    //private float delta = 0;
-    private float radius = 50;
-    //temp end
 
     public Game()
     {
@@ -75,23 +70,17 @@ public class Game implements Runnable
 
     private void update()
     {
-        //for (Tank en : GameResource.getEnemies())
-        //{
-        //    en.move(Display.getWindow().getWidth(), Display.getWindow().getHeight(), 0);
-        //}
-
-
         if(input.getKey(KeyEvent.VK_UP)){
-            GameResource.getMyTank().move(Display.getWindow().getWidth(), Display.getWindow().getHeight(), KeyEvent.VK_UP);
+            GameResource.getMyTank().move(KeyEvent.VK_UP);
         }else
         if(input.getKey(KeyEvent.VK_DOWN)){
-            GameResource.getMyTank().move(Display.getWindow().getWidth(), Display.getWindow().getHeight(), KeyEvent.VK_DOWN);
+            GameResource.getMyTank().move(KeyEvent.VK_DOWN);
         }else
         if(input.getKey(KeyEvent.VK_LEFT)){
-            GameResource.getMyTank().move(Display.getWindow().getWidth(), Display.getWindow().getHeight(), KeyEvent.VK_LEFT);
+            GameResource.getMyTank().move(KeyEvent.VK_LEFT);
         }else
         if(input.getKey(KeyEvent.VK_RIGHT)){
-            GameResource.getMyTank().move(Display.getWindow().getWidth(), Display.getWindow().getHeight(), KeyEvent.VK_RIGHT);
+            GameResource.getMyTank().move(KeyEvent.VK_RIGHT);
         }
 
         //эта штука анализирует столкновения объектов, движение, жизни, вызывая необходимые методы типа взрыв танка,
@@ -101,14 +90,18 @@ public class Game implements Runnable
     {
         Display.clear();
         graphics.setColor(new Color(0x120000));
-        //graphics.drawImage(ResourceLoader.loadImage(t.getImages().get("DOWN")), (int)x,(int)y,null,null);
         ShowPicture.showPicture(graphics, GameResource.getEnemies(),GameResource.getMyTank());
         Display.swapBuffers();
     }
 
     public void run()
     {
-        TanksConstruction.createTanks(18,18, graphics);
+        TanksConstruction.createTanks(7,5, graphics);
+        for (Tank en : GameResource.getEnemies())
+        {
+           enemyThreads.put(en, new Thread(en));
+           enemyThreads.get(en).start();
+        }
         //можно будет создать класс CreateLevel c методом в котором вызываться будет CreateTanks
         //стратегией будет разное движение вражеских танков путём переопределения метода Move танков
         int fps = 0;

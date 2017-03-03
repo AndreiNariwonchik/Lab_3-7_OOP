@@ -1,7 +1,7 @@
 package Game.Tanks;
 
-import Game.GameStruct.game.Game;
-
+import Game.GameStruct.game.State;
+import Game.display.Display;
 import java.awt.event.KeyEvent;
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -24,28 +24,35 @@ public class MyTank extends Tank
         super.images = ht;
     }
 
+    //@Override
+    //public  void destroy(){}
+
     @Override
-    public void move(int widthX, int widthY, int ke)
+    public void move(int ke)
     {
-        if(ke == KeyEvent.VK_UP) {
-            currentImage = ht.get("UP");
-            y -= spead;
-        }else if(ke == KeyEvent.VK_DOWN){
-            currentImage = ht.get("DOWN");
-            y+=spead;
-        }else if(ke == KeyEvent.VK_LEFT){
-            currentImage = ht.get("LEFT");
-            x-=spead;
-        }else if(ke == KeyEvent.VK_RIGHT){
-            currentImage = ht.get("RIGHT");
-            x+=spead;
+        if (borderCheck(Display.getWindow().getWidth(), Display.getWindow().getHeight())) {
+            if (ke == KeyEvent.VK_UP) {
+                setState(State.UP);
+                chekState();
+                y -= getSpeed();
+            } else if (ke == KeyEvent.VK_DOWN) {
+                setState(State.DOWN);
+                chekState();
+                y += getSpeed();
+            } else if (ke == KeyEvent.VK_LEFT) {
+                setState(State.LEFT);
+                chekState();
+                x -= getSpeed();
+            } else if (ke == KeyEvent.VK_RIGHT) {
+                setState(State.RIGHT);
+                chekState();
+                x += getSpeed();
+            }
         }
+        else
+        {
+            borderClash();
+        }
+
     }
-
-    @Override
-    public  void stateCheck()
-    {
-
-    }
-
 }
