@@ -1,9 +1,8 @@
 package Game.Tanks;
 
-import Game.GameStruct.game.GameResource;
 import Game.GameStruct.game.State;
-
 import java.util.Dictionary;
+
 
 /**
  * Created by andre on 19.02.2017.
@@ -32,7 +31,8 @@ public abstract class Tank implements Runnable
     //private  void setCurrentImage(String img){currentImage = img;}
     public  String getCurrentImage(){return currentImage;}
 
-    protected int getSpeed(){return speed;}
+    public int getLifes(){return lifes;}
+    public int getSpeed(){return speed;}
     public int getX(){return x;}
     public int getY(){return y;}
     public State getState(){return state;}

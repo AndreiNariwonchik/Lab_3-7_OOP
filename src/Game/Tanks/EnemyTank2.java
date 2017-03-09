@@ -13,8 +13,8 @@ public class EnemyTank2 extends Tank implements Runnable
 {
     Dictionary<String, String> ht = new Hashtable<>(4);
 
-    public EnemyTank2(int x, int y, int life) {
-        super(x, y, "Enemy2//Down//Tank1D.bmp", 2, life);
+    public EnemyTank2(int x, int y, int speed, int life) {
+        super(x, y, "Enemy2//Down//Tank1D.bmp", speed, life);
         setState(State.DOWN);
         ht.put("UP", "Enemy2//Up//Tank1U.bmp");
         ht.put("DOWN", "Enemy2//Down//Tank1D.bmp");

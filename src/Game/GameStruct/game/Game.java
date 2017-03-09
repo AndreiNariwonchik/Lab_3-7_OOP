@@ -1,6 +1,10 @@
 package Game.GameStruct.game;
 
-import Game.Tanks.EnemyTank1;
+
+import Game.GameStruct.game.Levels.Game_completed;
+import Game.GameStruct.game.Levels.Level;
+import Game.GameStruct.game.Levels.Level1;
+import Game.GameStruct.game.Levels.Level2;
 import Game.Tanks.Tank;
 import Game.display.Display;
 import Game.display.ShowPicture;
@@ -9,17 +13,17 @@ import Game.utils.Time;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.*;
-
 import Game.IO.Input;
-import org.omg.PortableServer.THREAD_POLICY_ID;
+
 
 /**
  * Created by andre on 19.02.2017.
  */
 public class Game implements Runnable
 {
-    private Level currentLevel;
+    private Level1 currentLevel;
     private Dictionary<Tank, Thread> enemyThreads = new Hashtable<>();
+    private ArrayList<Level> levels = new ArrayList<>();
 
     public static final int WIDTH = 800;
     public static  final  int HEIGHT = 600;
@@ -42,6 +46,9 @@ public class Game implements Runnable
         graphics = Display.getGraphics();
         input = new Input();
         Display.addInputListener(input);
+        levels.add(new Level1());
+        levels.add(new Level2());
+        levels.add(new Game_completed());
     }
 
     public synchronized void start()
@@ -70,6 +77,9 @@ public class Game implements Runnable
 
     private void update()
     {
+        if (input.getKey(KeyEvent.VK_ESCAPE)){
+            System.out.println("lalka");
+        } else
         if(input.getKey(KeyEvent.VK_UP)){
             GameResource.getMyTank().move(KeyEvent.VK_UP);
         }else
@@ -96,7 +106,9 @@ public class Game implements Runnable
 
     public void run()
     {
-        TanksConstruction.createTanks(7,5, graphics);
+        currentLevel = new Level1();
+        //TanksConstruction.createTanks(7,5, graphics);//level as params
+        TanksConstruction.createTanks(currentLevel, graphics);
         for (Tank en : GameResource.getEnemies())
         {
            enemyThreads.put(en, new Thread(en));

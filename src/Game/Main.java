@@ -1,11 +1,7 @@
 package Game;
 
 import Game.display.Display;
-import  Game.GameStruct.game.Game;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
+import Game.GameStruct.game.Game;
 
 
 public class Main {
