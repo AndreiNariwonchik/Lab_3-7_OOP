@@ -1,10 +1,11 @@
 package Game.GameStruct.game;
 
-import Game.GameStruct.game.Levels.Level;
-import Game.GameStruct.game.Levels.Level1;
-import Game.Tanks.Tank;
 
+import Game.OtherObjects.OtherObject;
+import Game.Tanks.Tank;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 
 /**
@@ -12,19 +13,14 @@ import java.util.ArrayList;
  */
 public abstract class GameResource
 {
-    //private static LinkedList<Level> game_levels = new LinkedList<>();
-    //private Level curLevel;
-
-    //public static Level getNextLevel(){
-    // return game_levels.getFirst();
-    //}
-
+    private static Dictionary<Tank, Thread> enemyThreads = new Hashtable<>();
     private static ArrayList<Tank> enemies = new ArrayList<>();
-    private static ArrayList<Object> others = new ArrayList<>();
+    private static ArrayList<OtherObject> others = new ArrayList<>();
     private static Tank myTank = null;
 
+    public static Dictionary<Tank, Thread> getEnemyThreads(){return enemyThreads;}
     public static ArrayList<Tank> getEnemies(){return enemies;}
-    public static ArrayList<Object> getOthers(){return others;};
+    public static ArrayList<OtherObject> getOthers(){return others;};
     public static Tank getMyTank(){return myTank;}
     public static void  setMyTank(Tank tank){myTank = tank;}
 }

@@ -1,4 +1,4 @@
-package Game.Tanks;
+package Game.OtherObjects;
 
 /**
  * Created by andrei on 04.03.17.

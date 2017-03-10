@@ -1,5 +1,7 @@
 package Game.GameStruct.game.Levels;
 
+import Game.OtherObjects.GameEnd;
+import Game.OtherObjects.OtherObject;
 import Game.Tanks.EnemyTank1;
 import Game.Tanks.EnemyTank2;
 import Game.display.Display;
@@ -45,11 +47,12 @@ public class Level1 extends Level
         return et2;
     }
 
-    private ArrayList<Object> createOthers(){
+    private ArrayList<OtherObject> createOthers(){
+        ArrayList<OtherObject> oth = new ArrayList<>();
         for(int i = 0; i< others; i++){
-
+            oth.add(new GameEnd());
         }
-        return null;
+        return oth;
     }
 
     //файл типа карта для уровня) исходя из неё будет заполнение

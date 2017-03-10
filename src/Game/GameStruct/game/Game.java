@@ -14,6 +14,8 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.*;
 import Game.IO.Input;
+import javafx.scene.SubScene;
+import javafx.scene.paint.Stop;
 
 
 /**
@@ -21,8 +23,8 @@ import Game.IO.Input;
  */
 public class Game implements Runnable
 {
-    private Level1 currentLevel;
-    private Dictionary<Tank, Thread> enemyThreads = new Hashtable<>();
+    private Level currentLevel;
+    //private Dictionary<Tank, Thread> enemyThreads = new Hashtable<>();
     private ArrayList<Level> levels = new ArrayList<>();
 
     public static final int WIDTH = 800;
@@ -35,6 +37,7 @@ public class Game implements Runnable
 
     private boolean running = false;
     private Thread gameThread;
+    private Thread checkLevel;
     private Graphics2D graphics;
 
     private Input input;
@@ -49,6 +52,64 @@ public class Game implements Runnable
         levels.add(new Level1());
         levels.add(new Level2());
         levels.add(new Game_completed());
+        checkLevel = new Thread();
+        currentLevel = levels.get(0);
+    }
+
+    private void changeRunning()
+    {
+        if (running)
+        {
+            System.out.print("From change Running"); running = !running;
+        }
+        else running = !running;
+    }
+
+    private void newLevel()
+    {
+        for (int i = 0; i < levels.size();i++)
+        {
+            if((levels.get(i).equals(currentLevel)) && (levels.get(i) != levels.get(levels.size()-2)))
+            {
+                try{Thread.sleep(1000);}
+                catch (InterruptedException ex){}
+
+                for (Tank t:GameResource.getEnemies())
+                {
+                        GameResource.getEnemyThreads().get(t).stop();
+                        try
+                        {
+                            Thread.sleep(10);
+                        }
+                        catch (InterruptedException exc){return;}
+                }
+                GameResource.getEnemies().clear();
+                GameResource.getOthers().clear();
+                currentLevel = levels.get(i+1);
+                changeRunning();
+                run();
+                return;
+            }
+            else {
+                for (Tank t:GameResource.getEnemies())
+                {
+                    GameResource.getEnemyThreads().get(t).stop();
+                    try
+                    {
+                        Thread.sleep(10);
+                    }
+                    catch (InterruptedException exc){return;}
+                }
+                GameResource.getEnemies().clear();
+                GameResource.getOthers().clear();
+                System.out.print("last level");
+                currentLevel = levels.get(levels.size() - 1);
+                render();
+
+                //stop();//протестить надо ещё
+                return;
+            }
+        }
     }
 
     public synchronized void start()
@@ -72,6 +133,7 @@ public class Game implements Runnable
         {
             e.printStackTrace();
         }
+        System.out.print("Game was stopped!");
         cleanUp();
     }
 
@@ -92,28 +154,30 @@ public class Game implements Runnable
         if(input.getKey(KeyEvent.VK_RIGHT)){
             GameResource.getMyTank().move(KeyEvent.VK_RIGHT);
         }
+        //if(currentLevel.isCompleted)newLevel();
 
         //эта штука анализирует столкновения объектов, движение, жизни, вызывая необходимые методы типа взрыв танка,
     }
 
+    int i = 0;
     private void render()
     {
         Display.clear();
         graphics.setColor(new Color(0x120000));
-        ShowPicture.showPicture(graphics, GameResource.getEnemies(),GameResource.getMyTank());
+        ShowPicture.showPicture(graphics, GameResource.getEnemies(),GameResource.getMyTank(), GameResource.getOthers());
         Display.swapBuffers();
     }
 
     public void run()
     {
-        currentLevel = new Level1();
+        //currentLevel = new Level1();
         //TanksConstruction.createTanks(7,5, graphics);//level as params
         TanksConstruction.createTanks(currentLevel, graphics);
-        for (Tank en : GameResource.getEnemies())
-        {
-           enemyThreads.put(en, new Thread(en));
-           enemyThreads.get(en).start();
-        }
+        //for (Tank en : GameResource.getEnemies())
+        //{
+        //   enemyThreads.put(en, new Thread(en));
+        //   enemyThreads.get(en).start();
+        //}
         //можно будет создать класс CreateLevel c методом в котором вызываться будет CreateTanks
         //стратегией будет разное движение вражеских танков путём переопределения метода Move танков
         int fps = 0;
@@ -125,6 +189,8 @@ public class Game implements Runnable
         long lastTime = Time.get();
         while (running)
         {
+            if (i==500 || i ==1500){changeRunning();}
+            i++;
             long now = Time.get();
             long elapsedTime = now - lastTime;
             lastTime = now;
@@ -166,6 +232,7 @@ public class Game implements Runnable
                 count = 0;
             }
         }
+        newLevel();
     }
 
     private void cleanUp()

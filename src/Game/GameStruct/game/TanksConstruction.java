@@ -1,6 +1,7 @@
 package Game.GameStruct.game;
 
 import Game.GameStruct.game.Levels.Level;
+import Game.OtherObjects.OtherObject;
 import  Game.Tanks.*;
 import Game.display.Display;
 import Game.utils.ResourceLoader;
@@ -19,6 +20,12 @@ public abstract class TanksConstruction
             graphics.drawImage(ResourceLoader.loadImage(GameResource.getEnemies().get(i).getImages().get("DOWN")),
                     (GameResource.getEnemies().get(i).getX()), (GameResource.getEnemies().get(i).getY()),null);
         }
+        for (int i = 0; i<GameResource.getOthers().size();i++)
+        {
+            graphics.drawImage(ResourceLoader.loadImage(GameResource.getOthers().get(i).getImage()),
+                    (GameResource.getOthers().get(i).getX()), (GameResource.getOthers().get(i).getY()),null);
+        }
+
         graphics.drawImage(ResourceLoader.loadImage(GameResource.getMyTank().getImages().get("UP")),
                 (GameResource.getMyTank().getX()), (GameResource.getMyTank().getY()),null);
 
@@ -30,14 +37,25 @@ public abstract class TanksConstruction
         //for (int i = 0; i < enemy1Сount; i++)
         for (int i = 0; i < level.getEnemyTanks1().size(); i++)
         {
-            GameResource.getEnemies().add(level.getEnemyTanks1().get(i));
-        }
-        for (int i = 0; i < level.getEnemyTanks2().size(); i++)
-        {
-            GameResource.getEnemies().add(level.getEnemyTanks2().get(i));
+            Tank t = level.getEnemyTanks1().get(i);
+            GameResource.getEnemies().add(t);
+            GameResource.getEnemyThreads().put(t, new Thread(t));
+            GameResource.getEnemyThreads().get(t).start();
         }
 
-        System.out.print(Display.getWindow().getWidth());
+        for (int i = 0; i < level.getEnemyTanks2().size(); i++)
+        {
+            Tank t = level.getEnemyTanks2().get(i);
+            GameResource.getEnemies().add(t);
+            GameResource.getEnemyThreads().put(t, new Thread(t));
+            GameResource.getEnemyThreads().get(t).start();
+        }
+
+        for (int i = 0; i<level.getOthers().size(); i++)
+        {
+            OtherObject ob = level.getOthers().get(i);
+            GameResource.getOthers().add(ob);
+        }
         GameResource.setMyTank(new MyTank((int)(Display.getWindow().getWidth()/2), Display.getWindow().getHeight() - 20, 2));
         showEnemies(graphics);
     }
