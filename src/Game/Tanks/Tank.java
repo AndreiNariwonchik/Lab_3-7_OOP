@@ -1,6 +1,10 @@
 package Game.Tanks;
 
 import Game.GameStruct.game.State;
+import Game.GameStruct.game.TanksConstruction;
+import Game.display.ShowBackground;
+import Game.display.ShowPicture;
+
 import java.util.Dictionary;
 
 
@@ -32,6 +36,7 @@ public abstract class Tank implements Runnable
     public  String getCurrentImage(){return currentImage;}
 
     public int getLifes(){return lifes;}
+    //public void setLifes(int lif){lifes = lif;}
     public int getSpeed(){return speed;}
     public int getX(){return x;}
     public int getY(){return y;}
@@ -39,7 +44,7 @@ public abstract class Tank implements Runnable
     public Dictionary<String, String> getImages(){return images;}
     protected void setState(State st){state = st;}
 
-    public void chekState()
+    public void checkState()
     {
         if (state == state.BURNING)
         {
@@ -78,6 +83,10 @@ public abstract class Tank implements Runnable
         else if (state == State.LEFT) x += speed;
         else if (state == State.RIGHT) x -= speed;
     }
+    public  void wound()
+    {
+        lifes--;
+    }
 
     public void blowUp()
     {
@@ -87,17 +96,17 @@ public abstract class Tank implements Runnable
     public void destroy()
     {
         blowUp();
-        chekState();
+        checkState();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(100);
         }
         catch (InterruptedException ex){System.out.print("Interгupted Exception");}
+        //TanksConstruction.destroyTank(this);
     }
 
     public void run()
     {
         while(getState() != state.BURNING)
-        //for (int i = 0; i<100;i++)
         {
             move(0);
             try {
@@ -105,9 +114,16 @@ public abstract class Tank implements Runnable
             }
             catch (InterruptedException ex){System.out.print("Interгupted Exception"); continue;}
         }
-        //blowUp();  //test
-
-        //GameResource.getEnemies().remove(this);  //test
+        if (getLifes() == 1)
+        {
+            destroy();
+            //TanksConstruction.destroyTank(this);
+        }
+        else
+        {
+            lifes --;
+            run();
+        }
     }
 
     public abstract void move(int ke);

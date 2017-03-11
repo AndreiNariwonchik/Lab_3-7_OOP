@@ -5,6 +5,7 @@ import Game.GameStruct.game.Levels.Game_completed;
 import Game.GameStruct.game.Levels.Level;
 import Game.GameStruct.game.Levels.Level1;
 import Game.GameStruct.game.Levels.Level2;
+import Game.Tanks.MyTank;
 import Game.Tanks.Tank;
 import Game.display.Display;
 import Game.display.ShowPicture;
@@ -14,8 +15,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.*;
 import Game.IO.Input;
-import javafx.scene.SubScene;
-import javafx.scene.paint.Stop;
 
 
 /**
@@ -24,8 +23,9 @@ import javafx.scene.paint.Stop;
 public class Game implements Runnable
 {
     private Level currentLevel;
-    //private Dictionary<Tank, Thread> enemyThreads = new Hashtable<>();
     private ArrayList<Level> levels = new ArrayList<>();
+    private int appleCount;
+
 
     public static final int WIDTH = 800;
     public static  final  int HEIGHT = 600;
@@ -54,9 +54,10 @@ public class Game implements Runnable
         levels.add(new Game_completed());
         checkLevel = new Thread();
         currentLevel = levels.get(0);
+        appleCount = currentLevel.getApplesCount();
     }
 
-    private void changeRunning()
+    private void changeRunningState()
     {
         if (running)
         {
@@ -86,7 +87,8 @@ public class Game implements Runnable
                 GameResource.getEnemies().clear();
                 GameResource.getOthers().clear();
                 currentLevel = levels.get(i+1);
-                changeRunning();
+                appleCount = currentLevel.getApplesCount();
+                changeRunningState();
                 run();
                 return;
             }
@@ -105,7 +107,6 @@ public class Game implements Runnable
                 System.out.print("last level");
                 currentLevel = levels.get(levels.size() - 1);
                 render();
-
                 //stop();//протестить надо ещё
                 return;
             }
@@ -137,8 +138,32 @@ public class Game implements Runnable
         cleanUp();
     }
 
+    private void wantRepeat()
+    {
+        changeRunningState();
+        System.out.print("Want you repeat this level?");
+        Scanner scan  = new Scanner(System.in);
+        if(scan.nextInt() == 1){changeRunningState(); run();}
+        else{stop();}
+    }
+
     private void update()
     {
+        if(((MyTank)GameResource.getMyTank()).isMyTankKilled(GameResource.getEnemies()))
+        {
+                render();
+                wantRepeat();
+        }
+        else
+        if(((MyTank)GameResource.getMyTank()).isAppleCollision(GameResource.getOthers()))
+        {
+            appleCount--;
+            if (appleCount == 0)
+            {
+                newLevel();
+            }
+        }
+        else
         if (input.getKey(KeyEvent.VK_ESCAPE)){
             System.out.println("lalka");
         } else
@@ -159,7 +184,6 @@ public class Game implements Runnable
         //эта штука анализирует столкновения объектов, движение, жизни, вызывая необходимые методы типа взрыв танка,
     }
 
-    int i = 0;
     private void render()
     {
         Display.clear();
@@ -170,14 +194,7 @@ public class Game implements Runnable
 
     public void run()
     {
-        //currentLevel = new Level1();
-        //TanksConstruction.createTanks(7,5, graphics);//level as params
         TanksConstruction.createTanks(currentLevel, graphics);
-        //for (Tank en : GameResource.getEnemies())
-        //{
-        //   enemyThreads.put(en, new Thread(en));
-        //   enemyThreads.get(en).start();
-        //}
         //можно будет создать класс CreateLevel c методом в котором вызываться будет CreateTanks
         //стратегией будет разное движение вражеских танков путём переопределения метода Move танков
         int fps = 0;
@@ -189,8 +206,8 @@ public class Game implements Runnable
         long lastTime = Time.get();
         while (running)
         {
-            if (i==500 || i ==1500){changeRunning();}
-            i++;
+            //if (i==500 || i ==1500){changeRunning();}
+            //i++;
             long now = Time.get();
             long elapsedTime = now - lastTime;
             lastTime = now;
@@ -232,7 +249,7 @@ public class Game implements Runnable
                 count = 0;
             }
         }
-        newLevel();
+        //newLevel();
     }
 
     private void cleanUp()

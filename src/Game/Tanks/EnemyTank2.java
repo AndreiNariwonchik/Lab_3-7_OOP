@@ -13,9 +13,9 @@ public class EnemyTank2 extends Tank implements Runnable
 {
     Dictionary<String, String> ht = new Hashtable<>(4);
 
-    public EnemyTank2(int x, int y, int speed, int life) {
+    public EnemyTank2(int x, int y, int speed, int life, State beginState) {
         super(x, y, "Enemy2//Down//Tank1D.bmp", speed, life);
-        setState(State.DOWN);
+        setState(beginState);
         ht.put("UP", "Enemy2//Up//Tank1U.bmp");
         ht.put("DOWN", "Enemy2//Down//Tank1D.bmp");
         ht.put("LEFT", "Enemy2//Left//Tank1L.bmp");
@@ -56,7 +56,7 @@ public class EnemyTank2 extends Tank implements Runnable
         {
             borderClash();
             isBorderCheckFalse();
-            chekState();
+            checkState();
         }
 
     }

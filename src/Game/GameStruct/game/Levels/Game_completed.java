@@ -1,6 +1,7 @@
 package Game.GameStruct.game.Levels;
 
 
+import Game.OtherObjects.Background;
 import Game.OtherObjects.GameEnd;
 import Game.OtherObjects.OtherObject;
 
@@ -16,7 +17,7 @@ public class Game_completed extends Level
     //String map = "Кнопочка//Play.bmp";
     public Game_completed()
     {
-        super("Кнопочка//Play.bmp");
+        super(new Background("Background//GameOver.bmp",0,0));
         super.setOthers(createOthers());
     }
 
@@ -25,6 +26,7 @@ public class Game_completed extends Level
         for(int i = 0; i< others; i++){
             othOb.add(new GameEnd());
         }
+        //oth.add(new Background("Background//background1.bmp", 0,0));
         return othOb;
     }
 }

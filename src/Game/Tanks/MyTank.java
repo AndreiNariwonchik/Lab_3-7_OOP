@@ -1,8 +1,10 @@
 package Game.Tanks;
 
 import Game.GameStruct.game.State;
+import Game.OtherObjects.OtherObject;
 import Game.display.Display;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -33,19 +35,19 @@ public class MyTank extends Tank
         if (borderCheck(Display.getWindow().getWidth(), Display.getWindow().getHeight())) {
             if (ke == KeyEvent.VK_UP) {
                 setState(State.UP);
-                chekState();
+                checkState();
                 y -= getSpeed();
             } else if (ke == KeyEvent.VK_DOWN) {
                 setState(State.DOWN);
-                chekState();
+                checkState();
                 y += getSpeed();
             } else if (ke == KeyEvent.VK_LEFT) {
                 setState(State.LEFT);
-                chekState();
+                checkState();
                 x -= getSpeed();
             } else if (ke == KeyEvent.VK_RIGHT) {
                 setState(State.RIGHT);
-                chekState();
+                checkState();
                 x += getSpeed();
             }
         }
@@ -53,6 +55,37 @@ public class MyTank extends Tank
         {
             borderClash();
         }
+    }
+    public boolean isMyTankKilled(ArrayList<Tank> tanks)
+    {
+        for (Tank tank:tanks)
+        {
+            if ( ((tank.getX()<= x) && (x <= tank.getX() + 20) && (tank.getY() <= y) && (y <= tank.getY()+20)) ||
+                    ((tank.getX() <= x + 20) && (x + 20 <= tank.getX() + 20) && (tank.getY() <= y) && (y <= tank.getY()+20)) ||
+                    ((tank.getX()<= x) && (x <= tank.getX() + 20) && (tank.getY() <= y +20) && (y + 20 <= tank.getY() + 20)) ||
+                    ((tank.getX()<= x + 20) && (x + 20 <= tank.getX() +20) && (tank.getY() <= y + 20) && (y + 20 <= tank.getY()+20))
+                    )
+            {
+                if(getLifes() == 1) {
+                    tank.destroy();
+                    this.destroy();
+                    return true;
+                }
+                else {
+                    wound();
+                    for (int i = 0; i<5; i++){
+                        borderClash();
+                    }
+                }
+                tank.destroy();
+                break;
+            }
+        }
+        return false;
+    }
 
+    public boolean isAppleCollision(ArrayList<OtherObject> tanks)
+    {
+        return false;
     }
 }

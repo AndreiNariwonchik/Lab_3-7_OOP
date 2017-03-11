@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.StringTokenizer;
 
 import Game.GameStruct.game.State;
+import Game.GameStruct.game.TanksConstruction;
 import Game.display.Display;
 import Game.utils.ResourceLoader;
 
@@ -17,10 +18,10 @@ public class EnemyTank1 extends Tank  implements Runnable
 {
     Dictionary<String,String> ht = new Hashtable<>(4);
 
-    public EnemyTank1(int x, int y, int speed, int life)
+    public EnemyTank1(int x, int y, int speed, int life, State beginState)
     {
         super(x, y, "Enemy1//Down//Hunter1D.bmp",speed, life);
-        setState(State.DOWN);
+        setState(beginState);
         ht.put("UP", "Enemy1//Up//Hunter1U.bmp");
         ht.put("DOWN", "Enemy1//Down//Hunter1D.bmp");
         ht.put("LEFT", "Enemy1//Left//Hunter1L.bmp");
@@ -53,17 +54,18 @@ public class EnemyTank1 extends Tank  implements Runnable
     @Override
     public void move(int ke)
     {
-            if (borderCheck(Display.getWindow().getWidth(),Display.getWindow().getHeight())){
-                if (getState() == State.UP) y -= getSpeed();
-                else if (getState() == State.DOWN) y += getSpeed();
-                else if (getState() == State.LEFT) x -= getSpeed();
-                else if (getState() == State.RIGHT) x += getSpeed();
-            }
-            else
-            {
-                borderClash();
-                isBorderCheckFalse();
-                chekState();
-            }
+        if (borderCheck(Display.getWindow().getWidth(),Display.getWindow().getHeight()))
+        {
+            if (getState() == State.UP) y -= getSpeed();
+            else if (getState() == State.DOWN) y += getSpeed();
+            else if (getState() == State.LEFT) x -= getSpeed();
+            else if (getState() == State.RIGHT) x += getSpeed();
+        }
+        else
+        {
+            borderClash();
+            isBorderCheckFalse();
+            checkState();
+        }
     }
 }

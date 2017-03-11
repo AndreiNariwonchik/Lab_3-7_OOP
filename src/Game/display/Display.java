@@ -38,7 +38,6 @@ public abstract class Display {
             window.pack();
             window.setVisible(true);
             created = true;
-
             buffer = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             bufferData = ((DataBufferInt)buffer.getRaster().getDataBuffer()).getData();
             bufferGraphics = buffer.getGraphics();

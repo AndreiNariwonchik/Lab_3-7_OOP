@@ -1,9 +1,11 @@
 package Game.GameStruct.game;
 
 import Game.GameStruct.game.Levels.Level;
+import Game.OtherObjects.Apple;
 import Game.OtherObjects.OtherObject;
 import  Game.Tanks.*;
 import Game.display.Display;
+import Game.display.ShowBackground;
 import Game.utils.ResourceLoader;
 import java.awt.*;
 
@@ -13,7 +15,7 @@ import java.awt.*;
  */
 public abstract class TanksConstruction
 {
-    private static void showEnemies(Graphics2D graphics)
+   /* private static void showEnemies(Graphics2D graphics)
     {
         for (int i = 0; i < GameResource.getEnemies().size(); i++)
         {
@@ -30,11 +32,9 @@ public abstract class TanksConstruction
                 (GameResource.getMyTank().getX()), (GameResource.getMyTank().getY()),null);
 
     }
-
-    //public static void createTanks(int enemy1Сount, int enemy2Count, Graphics2D graphics)
+*/
     public static void createTanks(Level level, Graphics2D graphics)
     {
-        //for (int i = 0; i < enemy1Сount; i++)
         for (int i = 0; i < level.getEnemyTanks1().size(); i++)
         {
             Tank t = level.getEnemyTanks1().get(i);
@@ -57,6 +57,21 @@ public abstract class TanksConstruction
             GameResource.getOthers().add(ob);
         }
         GameResource.setMyTank(new MyTank((int)(Display.getWindow().getWidth()/2), Display.getWindow().getHeight() - 20, 2));
-        showEnemies(graphics);
     }
+
+    public static void destroyTank(Tank tank)
+    {
+        try {
+            Thread.sleep(3000);
+        }
+        catch (InterruptedException ex){}
+        GameResource.getEnemies().remove(tank);
+        GameResource.getEnemyThreads().get(tank).stop();
+    }
+
+    public static void destroyApple(OtherObject apple)
+    {
+        GameResource.getOthers().remove(apple);
+    }
+
 }
